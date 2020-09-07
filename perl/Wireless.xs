@@ -14,41 +14,80 @@ int
 iw_get_kernel_we_version()
   
 int
-iw_get_range_info(int skfd,  const char *	ifname, iwrange *	range)
-
-int
-iw_get_priv_info(int skfd, const char *ifname, iwprivargs **	ppriv)
-
-int
-iw_get_basic_config(int skfd, const char *	ifname, wireless_config *	info)
+iw_get_range_info(skfd,  ifname, range)
+	int skfd
+	const char * ifname
+	iwrange *range
 	
 int
-iw_set_basic_config(int skfd, const char * ifname, wireless_config *	info)
-
-int
-iw_protocol_compare(const char * protocol1, const char * protocol2)
-
-void
-iw_print_bitrate(char *	buffer, int	buflen, int	bitrate);
-
-int
-iw_get_stats(int skfd, const char * ifname, iwstats * stats, const iwrange * range, int has_range)
-	
-void
-iw_print_stats(char * buffer,
-		       int		buflen,
-		       const iwqual *	qual,
-		       const iwrange *	range,
-		       int		has_range)
-
-void
-iw_init_event_stream(struct stream_descr *	stream, char *data,int len)
+iw_get_priv_info(skfd, ifname, ppriv)
+	int skfd 
+	char *ifname
+	iwprivargs **ppriv
 	
 int
-iw_extract_event_stream(struct stream_descr *	stream, struct iw_event * iwe, int we_version)
-
+iw_get_basic_config(skfd, ifname, info)
+	int skfd
+	char *	ifname
+	wireless_config *info
+	
 int
-iw_process_scan(int skfd, char * ifname, int  we_version, wireless_scan_head *	context)
-
+iw_set_basic_config(skfd,  ifname, info)
+	int skfd
+	char * ifname
+	wireless_config *info
+	
 int
-iw_scan(int skfd, char * ifname, int we_version, wireless_scan_head *	context)
+iw_protocol_compare(protocol1, protocol2)
+	char * protocol1
+	char * protocol2
+	
+void
+iw_print_bitrate(buffer, buflen, bitrate)
+	char *	buffer
+	int buflen
+	int bitrate
+	
+int
+iw_get_stats(skfd, ifname, stats, range,  has_range)
+	int skfd
+	char * ifname
+	iwstats * stats
+	iwrange * range
+	int has_range
+	
+void
+iw_print_stats(buffer, buflen, qual, range, has_range)
+	char * buffer
+	int buflen,
+	iwqual *qual
+	iwrange *range
+	int has_range
+	
+
+void
+iw_init_event_stream(stream, data, length)
+	struct stream_descr *	stream
+	char *data
+	int length
+	
+int
+iw_extract_event_stream(stream, iwe,  we_version)
+	struct stream_descr *	stream
+	struct iw_event * iwe
+	int we_version
+	
+int
+iw_process_scan(skfd, ifname,  we_version, context)
+	int skfd
+	char * ifname
+	int  we_version
+	wireless_scan_head *context
+	
+int
+iw_scan(skfd, ifname,  we_version, context)
+	int skfd
+	char * ifname
+	int we_version
+	wireless_scan_head *context
+	
