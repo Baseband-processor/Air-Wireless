@@ -10,6 +10,33 @@
 #define IW_MAX_ENCODING_SIZES	8
 #define IW_MAX_TXPOWER		8
 
+typedef struct iw_event
+{
+	__u16		len;			
+	__u16		cmd;			
+	union iwreq_data	u;		
+}IW_EVENT;
+
+typedef struct stream_descr
+{
+  char *	end;		
+  char *	current;	
+  char *	value;		
+} STREAM_DESCRIPTION;
+
+typedef struct wireless_scan_head
+{
+  wireless_scan *	result;		
+  int			retry;		
+} WIRELESS_SCAN_HEAD;
+
+typedef  struct wireless_config
+{
+  char		name[IFNAMSIZ + 1];	
+  int		has_mode;
+  int		mode;			
+}WIRELESS_CONFIG;
+
 typedef struct	iwprivargs 
 {
 	__u32		cmd;		
@@ -57,7 +84,6 @@ typedef struct	iw_range{
 	__s32		min_r_time;	
 	__s32		max_r_time;	
 	struct iw_quality	avg_qual;	
-
 }IW_RANGE;
 
 TYPEMAP: <<WIRELESS
@@ -171,7 +197,7 @@ int
 iw_get_range_info(skfd,  ifname, range)
 	int skfd
 	const char * ifname
-	iwrange *range
+	IW_RANGE *range
 	
 int
 iw_get_priv_info(skfd, ifname, ppriv)
@@ -183,13 +209,13 @@ int
 iw_get_basic_config(skfd, ifname, info)
 	int skfd
 	char *	ifname
-	wireless_config *info
+	WIRELESS_CONFIG *info
 	
 int
 iw_set_basic_config(skfd,  ifname, info)
 	int skfd
 	char * ifname
-	wireless_config *info
+	WIRELESS_CONFIG *info
 	
 int
 iw_protocol_compare(protocol1, protocol2)
@@ -207,7 +233,7 @@ iw_get_stats(skfd, ifname, stats, range,  has_range)
 	int skfd
 	char * ifname
 	iwstats * stats
-	iwrange * range
+	IW_RANGE * range
 	int has_range
 	
 void
@@ -215,20 +241,20 @@ iw_print_stats(buffer, buflen, qual, range, has_range)
 	char * buffer
 	int buflen,
 	iwqual *qual
-	iwrange *range
+	IW_RANGE *range
 	int has_range
 	
 
 void
 iw_init_event_stream(stream, data, length)
-	struct stream_descr *	stream
+	STREAM_DESCRIPTION *	stream
 	char *data
 	int length
 	
 int
 iw_extract_event_stream(stream, iwe,  we_version)
-	struct stream_descr *	stream
-	struct iw_event * iwe
+	STREAM_DESCRIPTION *	stream
+	IW_EVENT * iwe
 	int we_version
 	
 int
@@ -236,12 +262,12 @@ iw_process_scan(skfd, ifname,  we_version, context)
 	int skfd
 	char * ifname
 	int  we_version
-	wireless_scan_head *context
+	WIRELESS_SCAN_HEAD *context
 	
 int
 iw_scan(skfd, ifname,  we_version, context)
 	int skfd
 	char * ifname
 	int we_version
-	wireless_scan_head *context
+	WIRELESS_SCAN_HEAD *context
 	
