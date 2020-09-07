@@ -4,6 +4,61 @@
 
 #include <iwlib.h>
 
+#define IFNAMSIZ 16
+#define IW_MAX_FREQUENCIES	16
+#define IW_MAX_BITRATES		8
+#define IW_MAX_ENCODING_SIZES	8
+#define IW_MAX_TXPOWER		8
+
+typedef struct	iwprivargs 
+{
+	__u32		cmd;		
+	__u16		set_args;	
+	__u16		get_args;	
+	char		name[IFNAMSIZ];	
+}IWPRIVATE_ARGS;
+
+typedef struct	iw_range{
+	__u32		throughput;	
+	__u32		min_nwid;	
+	__u32		max_nwid;	
+	__u16		num_channels;	
+	__u8		num_frequency;	
+	struct iw_freq	freq[IW_MAX_FREQUENCIES];	
+	__s32	sensitivity;
+	struct iw_quality	max_qual;	
+	__u8		num_bitrates;	
+	__s32		bitrate[IW_MAX_BITRATES];	
+	__s32		min_rts;	
+	__s32		max_rts;	
+
+	__s32		min_frag;	
+	__s32		max_frag;	
+	__s32		min_pmp;	
+	__s32		max_pmp;	
+	__s32		min_pmt;	
+	__s32		max_pmt;	
+	__u16		pmp_flags;	
+	__u16		pmt_flags;	
+	__u16		pm_capa;	
+	__u16	encoding_size[IW_MAX_ENCODING_SIZES];	
+	__u8	num_encoding_sizes;	
+	__u8	max_encoding_tokens;	
+	__u16		txpower_capa;	
+	__u8		num_txpower;	
+	__s32		txpower[IW_MAX_TXPOWER];	
+	__u8		we_version_compiled;	
+	__u8		we_version_source;	
+	__u16		retry_capa;	
+	__u16		retry_flags;	
+	__u16		r_time_flags;	
+	__s32		min_retry;	
+	__s32		max_retry;	
+	__s32		min_r_time;	
+	__s32		max_r_time;	
+	struct iw_quality	avg_qual;	
+
+}IW_RANGE;
 
 TYPEMAP: <<WIRELESS
 
@@ -122,7 +177,7 @@ int
 iw_get_priv_info(skfd, ifname, ppriv)
 	int skfd 
 	char *ifname
-	iwprivargs **ppriv
+	IWPRIVATE_ARGS **ppriv
 	
 int
 iw_get_basic_config(skfd, ifname, info)
