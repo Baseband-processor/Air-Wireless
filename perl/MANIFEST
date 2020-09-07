@@ -1,0 +1,11 @@
+Changes
+lib/Air/Wireless.pm
+Wireless.xs
+Makefile.PL
+MANIFEST
+README.md
+t/test-lib.t
+t/test-version.t
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)
+ppport.h
