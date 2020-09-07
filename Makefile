@@ -1,4 +1,4 @@
-C_WIRELESS_DIR=
+C_WIRELESS_DIR=wireless_tools
 PERL_WIRELESS_DIR=perl
 TMP_INSTALL_DIR=${PWD}/usr
 default: all
