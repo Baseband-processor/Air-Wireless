@@ -91,7 +91,10 @@ struct( ifr_ifrn => [
 	ifrn_name => '$', # interface name
 ]);
         
-	
+struct( ether_addr => [
+	ether_addr_octet => '$', # octet
+]);
+
 struct( iw_param => [
 	value => '$',
 	fixed => '$',
@@ -211,6 +214,38 @@ struct( wireless_scan_head => [
 ]);
 
 # implement subroutines
+
+# Basic memcmp perl function
+sub memcmp {
+  no locale;
+  $_[0] cmp $_[1];
+}
+
+# Create an Ethernet broadcast address
+sub iw_broad_ether(){
+	my $Sock;
+	\$Sock new sockaddr = @_;
+	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
+	$Sock->sa_data = 0x00 x 6; # alias ETH_ALEN const
+}
+
+# Create an Ethernet NULL address
+sub iw_null_ether(){
+	my $Sock;
+	\$Sock new sockaddr = @_;
+	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
+	$Sock->sa_data = 0xFF x 6; # alias ETH_ALEN const
+
+}
+
+# Compare two ethernet addresses
+
+sub iw_ether_cmp{
+	my $eth1 = new ether_addr;
+	my $eth2 = new ether_addr;
+	( $eth1, $eth2 ) = @_;
+	return( &memcmp( $eth1, $eth2 ) );
+}
 
 sub iw_get_kernel_we_version(){
 	my $v;
