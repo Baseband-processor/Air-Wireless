@@ -6,14 +6,16 @@ our $VERSION = "0.07";
 
 # implement libraries
 
-use strict 'refs';
+use strict;
 no strict 'subs';
 use feature "refaliasing";
 no warnings;
 use File::fgets;
 use Class::Struct;
 use Config;
-use base qw(Exporter DynaLoader);
+require Exporter;
+our ( @ISA, @EXPORT_OK, %EXPORT_TAGS );
+
 
 my $ioctl_folder = $Config{archlib} . "/sys/ioctl.ph";
 
@@ -275,7 +277,7 @@ sub iw_get_kernel_we_version(){
 sub iw_set_ext{
 	my( $skfd, $ifname, $request ) = @_; 
 	my $pwrq = new iwreq;
-	substr( $pweq->ifr_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
+	substr( $pwrq->ifrn_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
 	return( ioctl($skfd, $request, $pwrq) );
 }
 
@@ -283,7 +285,7 @@ sub iw_set_ext{
 sub iw_get_ext{
 	my( $skfd, $ifname, $request ) = @_; 
 	my $pwrq = new iwreq;
-	substr( $pweq->ifr_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
+	substr( $pwrq->ifrn_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
 	return( ioctl($skfd, $request, $pwrq) );
 }
 
@@ -292,19 +294,12 @@ sub iw_get_ext{
 
 sub iw_process_scan{
 	my( $skfd, $ifname, $we_version, $ioctl ) = @_; 
-	# parse and control
-	foreach(@ioctls){
-		if($ioctl != $_){	
-			continue unless ($_ == $ioctls[-1]);
-			$ioctl = "0x8B18"; # assign as ioctl 'SIOCSIWSCAN'			
-			}
-		}
 	my $buffer;
 	\$buffer = undef;
 	my $buflength = 4096;
 	
 	my $wrq = new iwreq;
-	$context = new wireless_scan_head;
+	my $context = new wireless_scan_head;
  	$context->retry++;
 	if( $context->retry >= 150 ){
 	  return -1;
@@ -325,10 +320,11 @@ sub iw_scan{
 	my $delay;
 	# Security check
 	# this is done against buffer overflows
-	if(! undef(wireless_scan_head->result)){
-		wireless_scan_head->result = undef;
+	my $Scan_head = new wireless_scan_head;
+	if(not undef($Scan_head->result)){
+		$Scan_head->result = undef;
 	}
-	wireless_scan_head->retry = 0;
+	$Scan_head->result = 0;
 	
 	while(1){
 	  my $delay = &iw_process_scan( $skfd, \$ifname, $we_version, $context);
@@ -340,79 +336,5 @@ sub iw_scan{
 	  return( $delay );
 }
 
-
-our %EXPORT_TAGS = (
-	ioctl => [qw(
-       SIOCSIWCOMMIT
-       SIOCGIWNAME
-       SIOCSIWNWID
-       SIOCGIWNWID
-       SIOCSIWFREQ
-       SIOCGIWFREQ
-       SIOCSIWMODE
-       SIOCGIWMODE
-       SIOCSIWSENS
-       SIOCGIWSENS
-       SIOCSIWRANGE
-       SIOCGIWRANGE
-       SIOCSIWPRIV
-       SIOCGIWPRIV
-       SIOCSIWSTATS
-       SIOCGIWSTATS
-       SIOCSIWSPY
-       SIOCGIWSPY
-       SIOCSIWTHRSPY
-       SIOCGIWTHRSPY
-       SIOCSIWAP
-       SIOCGIWAP
-       SIOCGIWAPLIST
-       SIOCSIWSCAN
-       SIOCGIWSCAN
-       SIOCSIWESSID
-       SIOCGIWESSID
-       SIOCSIWNICKN
-       SIOCGIWNICKN
-       SIOCSIWRATE
-       SIOCGIWRATE
-       SIOCSIWRTS
-       SIOCGIWRTS
-       SIOCSIWFRAG
-       SIOCGIWFRAG
-       SIOCSIWTXPOW
-       SIOCGIWTXPOW
-       SIOCSIWRETRY
-       SIOCGIWRETRY
-       SIOCSIWENCODE
-       SIOCGIWENCODE
-       SIOCSIWPOWER
-       SIOCGIWPOWER
-       SIOCSIWMODUL
-       SIOCGIWMODUL
-       SIOCSIWGENIE
-       SIOCGIWGENIE
-       SIOCSIWMLME
-       SIOCSIWAUTH
-       SIOCGIWAUTH
-       SIOCSIWENCODEEXT
-       SIOCGIWENCODEEXT
-       SIOCSIWPMKSA
-       SIOCIWFIRSTPRIV
-       SIOCIWLASTPRIV
-       SIOCIWFIRST
-       SIOCIWLAST
-)],
-   utils => [qw(
-	iw_get_kernel_we_version
-	iw_set_ext
-	iw_get_ext
-	iw_process_scan
-	iw_scan
-)],
-	);
-
-__PACKAGE__->bootstrap($VERSION);
-
 1;
-
-__END__
 
