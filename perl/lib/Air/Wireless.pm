@@ -224,7 +224,7 @@ sub memcmp {
 # Create an Ethernet broadcast address
 sub iw_broad_ether(){
 	my $Sock;
-	\$Sock new sockaddr = @_;
+	$Sock = new sockaddr = @_;
 	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
 	$Sock->sa_data = 0x00 x 6; # alias ETH_ALEN const
 }
@@ -232,7 +232,7 @@ sub iw_broad_ether(){
 # Create an Ethernet NULL address
 sub iw_null_ether(){
 	my $Sock;
-	\$Sock new sockaddr = @_;
+	\$Sock = new sockaddr = @_;
 	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
 	$Sock->sa_data = 0xFF x 6; # alias ETH_ALEN const
 
