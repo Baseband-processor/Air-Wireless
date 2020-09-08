@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-   NAME => 'Air::Lorcon2',
+   NAME => 'Air::Wireless',
    LICENSE => 'perl',
    AUTHOR => 'Edoardo Mantovani aka Baseband',
    DEFINE => '',
