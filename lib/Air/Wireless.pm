@@ -7,9 +7,11 @@ our $VERSION = "0.07";
 # implement libraries
 
 use strict;
+no strict 'refs';
 no strict 'subs';
 use feature "refaliasing";
 no warnings;
+use Socket qw( AF_INET SOCK_DGRAM);
 use File::fgets;
 use Class::Struct;
 use Config;
@@ -297,15 +299,14 @@ sub iw_get_ext{
 	return( ioctl($skfd, $request, $pwrq) );
 }
 
+# return AF_INET socket
 sub iw_sockets_open(){
-	my @SocketFamilies = ("AF_INET", "AF_IPX", "AF_AX25", "AF_APPLETALK");
-	foreach( @SocketFamilies ){
-		my $Socket = socket($_, SOCK_DGRAM, 0);
-	if($socket >= 0){
+        my $Socket = socket(my $socket, AF_INET, SOCK_DGRAM, 0);
+	if($Socket >= 0){
 		return $Socket;
+	}else{
+		return -1; # means "unable to create the socket"
 	}
-		}
-	return -1;
 }
 
 sub iw_sockets_close{
