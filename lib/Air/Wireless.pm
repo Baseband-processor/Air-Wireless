@@ -25,8 +25,9 @@ if( -e $ioctl_folder ){
 
 # implement constants
 
-use constant PROC_NET_WIRELESS => "/proc/net/wireless";
+use constant PROC_NET_WIRELESS => "/proc/net/wireless"; 
 
+# implement avaiable ioctls
 use constant {
        SIOCSIWCOMMIT => 0x8B00,
        SIOCGIWNAME => 0x8B01,
@@ -84,15 +85,16 @@ use constant {
        SIOCIWFIRSTPRIV => 0x8BE0,
        SIOCIWLASTPRIV => 0x8BFF,
        SIOCIWFIRST => 0x8B00,
-       SIOCIWLAST => SIOCIWLASTPRIV,
+       SIOCIWLAST => 0x8BFF,
 };
 
 # implement classes
-
-struct( ifr_ifrn => [
-	ifrn_name => '$', # interface name
+       
+struct( sockaddr => [
+	sa_family => '$', # address family
+	sa_data => '$', # socket address (variable-length data)
 ]);
-        
+
 struct( ether_addr => [
 	ether_addr_octet => '$', # octet
 ]);
@@ -217,6 +219,13 @@ struct( wireless_scan_head => [
 
 # implement subroutines
 
+# NOTE: the most used parameters are:
+
+# skfd --> Socket to the kernel
+# if_name --> Device name
+# request --> WE ID
+# pwrq --> Fixed part of the request
+
 # Basic memcmp perl function
 sub memcmp {
   no locale;
@@ -225,16 +234,16 @@ sub memcmp {
 
 # Create an Ethernet broadcast address
 sub iw_broad_ether(){
-	my $Sock;
-	$Sock = new sockaddr = @_;
+	my $Sock = new sockaddr;
+	$Sock = @_;
 	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
 	$Sock->sa_data = 0x00 x 6; # alias ETH_ALEN const
 }
 
 # Create an Ethernet NULL address
 sub iw_null_ether(){
-	my $Sock;
-	\$Sock = new sockaddr = @_;
+	my $Sock = new sockaddr;
+	$Sock = @_;
 	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
 	$Sock->sa_data = 0xFF x 6; # alias ETH_ALEN const
 
@@ -289,9 +298,16 @@ sub iw_get_ext{
 	return( ioctl($skfd, $request, $pwrq) );
 }
 
+sub iw_sockets_close{
+  my $skfd = @_;
+  close(skfd)
+ }
+ 
 # NOTE:
 # iw_set_ext and iw_get_ext differs only by the IOCTL, one push parameters while the other require parameters
 
+
+ 
 sub iw_process_scan{
 	my( $skfd, $ifname, $we_version, $ioctl ) = @_; 
 	my $buffer;
