@@ -259,29 +259,14 @@ sub iw_ether_cmp{
 	return( &memcmp( $eth1, $eth2 ) );
 }
 
+# this naif subroutine will store the first 2 lines of the /proc/net/wireless file and extract only the numeric digits, aka the WE number
 sub iw_get_kernel_we_version(){
-	my $v;
-	my $file = open( WIRELESS, '>', "/proc/net/wireless" ); #PROC_NET_WIRELESS
-	if(undef ( $file ) || (! WIRELESS) ){
-		print "cannot read /proc/net/wireless/";
+	if(! -e PROC_NET_WIRELESS){
 		return -1;
-		}
-
-	my $buff = fgets($file, 1024);
-	if(index($buff, "| WE") == undef){
-		if(index($buff, "| Missed") == undef){
-			$v = 11;
-		}else{
-		$v = 15;
-		close( $file );
-		return( $v );
-}	
-	}
-	$buff = fgets( 1024, $file );
-	my @version = split( "|", $buff );
-	$v = $version[-1];
-	close( $file );
-	return( $v );
+	} 	
+	my $file = `cat /proc/net/wireless | head -n 2`;
+	$file =~ s/[^0-9]//g;
+	print $file;
 }
 
 sub iw_set_ext{
