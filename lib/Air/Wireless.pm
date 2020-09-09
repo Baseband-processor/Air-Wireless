@@ -13,8 +13,8 @@ no warnings;
 use File::fgets;
 use Class::Struct;
 use Config;
+use Devel::Size qw(Size);
 require Exporter;
-our ( @ISA, @EXPORT_OK, %EXPORT_TAGS );
 
 
 my $ioctl_folder = $Config{archlib} . "/sys/ioctl.ph";
@@ -296,6 +296,17 @@ sub iw_get_ext{
 	my $pwrq = new iwreq;
 	substr( $pwrq->ifrn_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
 	return( ioctl($skfd, $request, $pwrq) );
+}
+
+sub iw_sockets_open(){
+	my @SocketFamilies = ("AF_INET", "AF_IPX", "AF_AX25", "AF_APPLETALK");
+	for(my $i = 0; $i <= $#SocketFamilies; ++$i){ 
+		my $Socket = socket($SocketFamilies[$i], SOCK_DGRAM, 0);
+	if($socket >= 0){
+		return $Socket;
+	}
+		}
+	return -1;
 }
 
 sub iw_sockets_close{
