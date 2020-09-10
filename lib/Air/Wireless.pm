@@ -18,6 +18,7 @@ use Config;
 use Switch;
 require Exporter;
 
+our ( @ISA, @EXPORT_OK, %EXPORT_TAGS );
 
 my $ioctl_folder = $Config{archlib} . "/sys/ioctl.ph";
 
@@ -31,7 +32,8 @@ use constant PROC_NET_WIRELESS => "/proc/net/wireless";
 
 # implement avaiable ioctls
 # for more info about varius IOCTL please refer to: elixir.bootlin.com and search for linux source code, are well documented
-use constant {
+
+use constant  {
        SIOCSIWCOMMIT => "0x8B00",
        SIOCGIWNAME => "0x8B01",
        SIOCSIWNWID => "0x8B02",
@@ -90,47 +92,49 @@ use constant {
        SIOCIWLAST => "0x8BFF",
 };
 
+
+
 # implement classes
 # an huge part of these class are from <wireless.h> header
  
-struct( sockaddr => [
+struct sockaddr => {
 	sa_family => '$', # address family
 	sa_data => '$', # socket address (variable-length data)
-]);
+};
 
-struct( ether_addr => [
+struct ether_addr => {
 	ether_addr_octet => '$', # ethernet address octet
-]);
+};
 
-struct( iw_param => [
+struct iw_param => {
 	value => '$', # value of the parameter itself
 	fixed => '$', 
 	disabled => '$', # disable feature
 	flags => '$', # specific flags
-]);
+};
 
-struct( iw_point => [
+struct iw_point => {
 	pointer => '$', # user's data pointer
 	length => '$', # number of fields or size in bytes
 	flags => '$', # optional params
-]);
+};
 
-struct( iw_freq => [
+struct iw_freq => {
 	m => '$', 
 	e => '$',
 	i => '$', # list index
 	flags => '$', # specific flags
-]);
+};
 
-struct( iw_quality => [
+struct iw_quality => {
 	qual => '$',  # link quality
 	level => '$', # signal level (dBm)
 	noise => '$', # noise level (dBm)
 	updated => '$', # flags for update
-]);
+};
 
 
-struct( iwreq_data => [
+struct iwreq_data => {
 	name => '$', # network name
 	essid => 'iw_point', # network essid
 	nwid => 'iw_param', # network ID
@@ -149,35 +153,34 @@ struct( iwreq_data => [
 	addr => 'sockaddr', # destination address
 	param => 'iw_param', # small parameters
 	data => 'iw_point', # large parameters
-]);
+};
 
 
-struct( iwreq => [
+struct iwreq => {
 	ifrn_name => '$', # interface name
         u => 'iwreq_data', # data part
-]);
+};
 
 
-struct( wireless_scan => [
+struct wireless_scan => {
 	next => '*wireless_scan',
 	has_maxbitrate => '$',
+};
 
-]);
-
-struct( stream_descr => [
+struct stream_descr => {
 	end => '*$',
 	current => '*$',
 	value => '*$',
-]);
+};
 
-struct( wireless_config => [
+struct wireless_config => {
 	name => '$',
 	has_mode => '$',
 	mode => '$',
-]);
+};
 
 # name of these parameters is quite intuitive, so less explanations :P
-struct( iw_range => [
+struct iw_range => {
 	throughput => '$',
 	min_nwid => '$',
 	max_nwid => '$',
@@ -215,12 +218,12 @@ struct( iw_range => [
 	min_r_time => '$',
 	max_r_time => '$',
 	avg_qual => 'iw_quality',
-]);
+};
 
-struct( wireless_scan_head => [
+struct wireless_scan_head => {
 	result => '*wireless_scan',
 	retry =>  '$',
-]);
+};
 
 # implement subroutines
 
@@ -239,7 +242,7 @@ sub memcmp {
 
 # Create an Ethernet broadcast address
 sub iw_broad_ether(){
-	my $Sock = new sockaddr;
+	my $Sock = sockaddr->new();
 	$Sock = @_;
 	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
 	$Sock->sa_data = 0x00 x 6; # alias ETH_ALEN const
@@ -247,7 +250,7 @@ sub iw_broad_ether(){
 
 # Create an Ethernet NULL address
 sub iw_null_ether(){
-	my $Sock = new sockaddr;
+	my $Sock = sockaddr->new();
 	$Sock = @_;
 	$Sock->sa_family = 1; # alias ARPHRD_ETHER const
 	$Sock->sa_data = 0xFF x 6; # alias ETH_ALEN const
@@ -257,8 +260,8 @@ sub iw_null_ether(){
 # Compare two ethernet addresses
 
 sub iw_ether_cmp{
-	my $eth1 = new ether_addr;
-	my $eth2 = new ether_addr;
+	my $eth1 = ether_addr->new();
+	my $eth2 = ether_addr->new();
 	( $eth1, $eth2 ) = @_;
 	return( &memcmp( $eth1, $eth2 ) );
 }
@@ -278,7 +281,7 @@ sub iw_get_kernel_we_version(){
 # iw_set_ext and iw_get_ext differs only by the IOCTL, one push parameters while the other require parameters
 sub iw_set_ext{
 	my( $skfd, $ifname, $request ) = @_; 
-	my $pwrq = new iwreq;
+	my $pwrq = iwreq->new();
 	substr( $pwrq->ifrn_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
 	return( ioctl($skfd, $request, $pwrq) );
 }
@@ -286,7 +289,7 @@ sub iw_set_ext{
 
 sub iw_get_ext{
 	my( $skfd, $ifname, $request ) = @_; 
-	my $pwrq = new iwreq;
+	my $pwrq = iwreq->new();
 	substr( $pwrq->ifrn_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
 	return( ioctl($skfd, $request, $pwrq) );
 }
@@ -316,7 +319,7 @@ sub iw_process_scan{
 	my $buffer = undef;
 	my $buflength = 4096;
 	
-	my $context = new wireless_scan_head;
+	my $context = wireless_scan_head->new();
  	my $retry = $context->retry +1;
 	if( $retry >= 150 ){
 	  return -1;
