@@ -15,6 +15,7 @@ use Socket qw( AF_INET SOCK_DGRAM);
 use File::fgets;
 use Class::Struct;
 use Config;
+use Switch;
 require Exporter;
 
 
@@ -371,6 +372,33 @@ sub iw_print_ie_unknown {
 		    print "\n";
 }
 	}
+
+sub iw_print_ie_wpa{
+	my ( @iebuf, $buflength ) = @_;
+	my $ielength = $iebuf[1] + 2;
+	my $offset = 2;
+	my (@wpa_oui, @wpa1_oui, @wpa2_oui );
+	$wpa1_oui[3] = {0x00, 0x50, 0xf2};
+	$wpa2_oui[3] = {0x00, 0x0f, 0xac};
+	if( $ielength > $buflength ){
+    		$ielength = $buflength;
+	}
+	switch( $iebuf[0] ) {
+		case 0x30 { if( $ielength < 4) { &iw_print_ie_unknown( $iebuf, $buflength );  return; @wpa_oui = @wpa2_oui; break;} }
+		case 0xdd { @wpa_oui = @wpa1_oui; if( ( $ielength < 8) or (memcmp(&iebuf[offset], wpa_oui, 3) != 0) or ( $iebuf[ $offset + 3] != 0x01)){ &iw_print_ie_unknown( $iebuf, $buflength ); return; } $offset += 4; break; }
+	}
+	my $ver = $iebuf[ $offset ] | ( $iebuf[ $offset + 1] << 8);
+	my $offset += 2;
+	if( $iebuf[0] eq 0xdd){
+    		printf("WPA Version %d\n", $ver);
+		}
+ 	 if(iebuf[0] == 0x30){
+    		printf("IEEE 802.11i/WPA2 Version %d\n", $ver);
+    }
+	}
+	
+	}
+}
 
 1;
 
