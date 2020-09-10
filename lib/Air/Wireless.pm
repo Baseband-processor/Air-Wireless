@@ -273,25 +273,30 @@ sub iw_get_kernel_we_version(){
 	} 	
 	my $file = `cat /proc/net/wireless | head -n 2`;
 	$file =~ s/[^0-9]//g;
-	print $file;
+	if( length( $file ) > 2 ){
+		while( length( $file ) <= 2 ){
+			chop( $file );
+		}
+	}
+	return( $file );
 }
 
  
 # NOTE:
 # iw_set_ext and iw_get_ext differs only by the IOCTL, one push parameters while the other require parameters
 sub iw_set_ext{
-	my( $skfd, $ifname, $request ) = @_; 
+	my( $skfd, $ifname, $ioctl ) = @_; 
 	my $pwrq = iwreq->new();
 	substr( $pwrq->ifrn_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
-	return( ioctl($skfd, $request, $pwrq) );
+	return( ioctl($skfd, $ioctl, $pwrq) );
 }
 
 
 sub iw_get_ext{
-	my( $skfd, $ifname, $request ) = @_; 
+	my( $skfd, $ifname, $ioctl ) = @_; 
 	my $pwrq = iwreq->new();
 	substr( $pwrq->ifrn_name, 16, $ifname ); # where 16 is the value of the IFNAMSIZ constant
-	return( ioctl($skfd, $request, $pwrq) );
+	return( ioctl($skfd, $ioctl, $pwrq) );
 }
 
 # return AF_INET socket
