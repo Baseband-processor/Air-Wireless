@@ -343,10 +343,34 @@ sub iw_scan{
 	  if($delay <= 0){
 	    last;
 		}
+
 	  sleep($delay * 1000);
 	}
 	  return( $delay );
 }
+
+
+sub iw_print_value_name{
+	my( $value, @names, $num_names ) = @_;
+	if( $value >= $num_names ){
+		print " $value is unknown!\n";
+		return -1;
+	}else{
+		print $names[$value];	
+}
+	}
+	
+sub iw_print_ie_unknown {
+	my ( @iebuf, $buflength ) = @_;
+	my $ielength = $iebuf[1] + 2;
+	  if( $ielength > $buflen) {
+    		$ielength = $buflen;
+	}
+	for( my $i = 0; $i < $ielength; $i++ ){
+		    printf("%02X", $iebuf[$i]);
+		    print "\n";
+}
+	}
 
 1;
 
