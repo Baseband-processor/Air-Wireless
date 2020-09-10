@@ -30,94 +30,96 @@ if( -e $ioctl_folder ){
 use constant PROC_NET_WIRELESS => "/proc/net/wireless"; 
 
 # implement avaiable ioctls
+# for more info about varius IOCTL please refer to: elixir.bootlin.com and search for linux source code, are well documented
 use constant {
-       SIOCSIWCOMMIT => 0x8B00,
-       SIOCGIWNAME => 0x8B01,
-       SIOCSIWNWID => 0x8B02,
-       SIOCGIWNWID => 0x8B03,
-       SIOCSIWFREQ => 0x8B04,
-       SIOCGIWFREQ => 0x8B05,
-       SIOCSIWMODE => 0x8B06,
-       SIOCGIWMODE => 0x8B07,
-       SIOCSIWSENS => 0x8B08,
-       SIOCGIWSENS => 0x8B09,
-       SIOCSIWRANGE => 0x8B0A,
-       SIOCGIWRANGE => 0x8B0B,
-       SIOCSIWPRIV => 0x8B0C,
-       SIOCGIWPRIV => 0x8B0D,
-       SIOCSIWSTATS => 0x8B0E,
-       SIOCGIWSTATS => 0x8B0F,
-       SIOCSIWSPY => 0x8B10,
-       SIOCGIWSPY => 0x8B11,
-       SIOCSIWTHRSPY => 0x8B12,
-       SIOCGIWTHRSPY => 0x8B13,
-       SIOCSIWAP => 0x8B14,
-       SIOCGIWAP => 0x8B15,
-       SIOCGIWAPLIST => 0x8B17,
-       SIOCSIWSCAN => 0x8B18,
-       SIOCGIWSCAN => 0x8B19,
-       SIOCSIWESSID => 0x8B1A,
-       SIOCGIWESSID => 0x8B1B,
-       SIOCSIWNICKN => 0x8B1C,
-       SIOCGIWNICKN => 0x8B1D,
-       SIOCSIWRATE => 0x8B20,
-       SIOCGIWRATE => 0x8B21,
-       SIOCSIWRTS => 0x8B22,
-       SIOCGIWRTS => 0x8B23,
-       SIOCSIWFRAG => 0x8B24,
-       SIOCGIWFRAG => 0x8B25,
-       SIOCSIWTXPOW => 0x8B26,
-       SIOCGIWTXPOW => 0x8B27,
-       SIOCSIWRETRY => 0x8B28,
-       SIOCGIWRETRY => 0x8B29,
-       SIOCSIWENCODE => 0x8B2A,
-       SIOCGIWENCODE => 0x8B2B,
-       SIOCSIWPOWER => 0x8B2C,
-       SIOCGIWPOWER => 0x8B2D,
-       SIOCSIWMODUL => 0x8B2E,
-       SIOCGIWMODUL => 0x8B2F,
-       SIOCSIWGENIE => 0x8B30,
-       SIOCGIWGENIE => 0x8B31,
-       SIOCSIWMLME => 0x8B16,
-       SIOCSIWAUTH => 0x8B32,
-       SIOCGIWAUTH => 0x8B33,
-       SIOCSIWENCODEEXT => 0x8B34,
-       SIOCGIWENCODEEXT => 0x8B35,
-       SIOCSIWPMKSA => 0x8B36,
-       SIOCIWFIRSTPRIV => 0x8BE0,
-       SIOCIWLASTPRIV => 0x8BFF,
-       SIOCIWFIRST => 0x8B00,
-       SIOCIWLAST => 0x8BFF,
+       SIOCSIWCOMMIT => "0x8B00",
+       SIOCGIWNAME => "0x8B01",
+       SIOCSIWNWID => "0x8B02",
+       SIOCGIWNWID => "0x8B03",
+       SIOCSIWFREQ => "0x8B04",
+       SIOCGIWFREQ => "0x8B05",
+       SIOCSIWMODE => "0x8B06",
+       SIOCGIWMODE => "0x8B07",
+       SIOCSIWSENS => "0x8B08",
+       SIOCGIWSENS => "0x8B09",
+       SIOCSIWRANGE => "0x8B0A",
+       SIOCGIWRANGE => "0x8B0B",
+       SIOCSIWPRIV => "0x8B0C",
+       SIOCGIWPRIV => "0x8B0D",
+       SIOCSIWSTATS => "0x8B0E",
+       SIOCGIWSTATS => "0x8B0F",
+       SIOCSIWSPY => "0x8B10",
+       SIOCGIWSPY => "0x8B11",
+       SIOCSIWTHRSPY => "0x8B12",
+       SIOCGIWTHRSPY => "0x8B13",
+       SIOCSIWAP => "0x8B14",
+       SIOCGIWAP => "0x8B15",
+       SIOCGIWAPLIST => "0x8B17",
+       SIOCSIWSCAN => "0x8B18",
+       SIOCGIWSCAN => "0x8B19",
+       SIOCSIWESSID => "0x8B1A",
+       SIOCGIWESSID => "0x8B1B",
+       SIOCSIWNICKN => "0x8B1C",
+       SIOCGIWNICKN => "0x8B1D",
+       SIOCSIWRATE => "0x8B20",
+       SIOCGIWRATE => "0x8B21",
+       SIOCSIWRTS => "0x8B22",
+       SIOCGIWRTS => "0x8B23",
+       SIOCSIWFRAG => "0x8B24",
+       SIOCGIWFRAG => "0x8B25",
+       SIOCSIWTXPOW => "0x8B26",
+       SIOCGIWTXPOW => "0x8B27",
+       SIOCSIWRETRY => "0x8B28",
+       SIOCGIWRETRY => "0x8B29",
+       SIOCSIWENCODE => "0x8B2A",
+       SIOCGIWENCODE => "0x8B2B",
+       SIOCSIWPOWER => "0x8B2C",
+       SIOCGIWPOWER => "0x8B2D",
+       SIOCSIWMODUL => "0x8B2E",
+       SIOCSIWGENIE => "0x8B30",
+       SIOCGIWGENIE => "0x8B31",
+       SIOCSIWMLME => "0x8B16",
+       SIOCSIWAUTH => "0x8B32",
+       SIOCGIWAUTH => "0x8B33",
+       SIOCSIWENCODEEXT => "0x8B34",
+       SIOCGIWENCODEEXT => "0x8B35",
+       SIOCSIWPMKSA => "0x8B36",
+       SIOCIWFIRSTPRIV => "0x8BE0",
+       SIOCIWLASTPRIV => "0x8BFF",
+       SIOCIWFIRST => "0x8B00",
+       SIOCIWLAST => "0x8BFF",
 };
 
 # implement classes
-       
+# an huge part of these class are from <wireless.h> header
+ 
 struct( sockaddr => [
 	sa_family => '$', # address family
 	sa_data => '$', # socket address (variable-length data)
 ]);
 
 struct( ether_addr => [
-	ether_addr_octet => '$', # octet
+	ether_addr_octet => '$', # ethernet address octet
 ]);
 
 struct( iw_param => [
-	value => '$',
-	fixed => '$',
-	disabled => '$',
-	flags => '$',
+	value => '$', # value of the parameter itself
+	fixed => '$', 
+	disabled => '$', # disable feature
+	flags => '$', # specific flags
 ]);
 
 struct( iw_point => [
-	pointer => '$',
-	length => '$',
-	flags => '$',
+	pointer => '$', # user's data pointer
+	length => '$', # number of fields or size in bytes
+	flags => '$', # optional params
 ]);
 
 struct( iw_freq => [
 	m => '$', 
 	e => '$',
-	i => '$',
+	i => '$', # list index
+	flags => '$', # specific flags
 ]);
 
 struct( iw_quality => [
@@ -129,30 +131,30 @@ struct( iw_quality => [
 
 
 struct( iwreq_data => [
-	name => '$',
-	essid => 'iw_point',
-	nwid => 'iw_param',
-	freq => 'iw_freq',
-	sens => 'iw_param',
-	bitrate => 'iw_param',
+	name => '$', # network name
+	essid => 'iw_point', # network essid
+	nwid => 'iw_param', # network ID
+	freq => 'iw_freq', # network's frequency
+	sens => 'iw_param', # networkthreshold
+	bitrate => 'iw_param', # network bitrate
 	txpower => 'iw_param',
 	rts => 'iw_param',
 	frag => 'iw_param',
-	mode => '$',
-	retry => 'iw_param',
-	encoding => 'iw_point',
+	mode => '$', # operations mode
+	retry => 'iw_param', # limits and lifetime
+	encoding => 'iw_point', # tokens used for encoding
 	power => 'iw_param',
 	qual => 'iw_quality',
-	ap_addr	=> 'sockaddr',
-	addr => 'sockaddr',
-	param => 'iw_param',
-	data => 'iw_point',
+	ap_addr	=> 'sockaddr', 
+	addr => 'sockaddr', # destination address
+	param => 'iw_param', # small parameters
+	data => 'iw_point', # large parameters
 ]);
 
 
 struct( iwreq => [
-	ifrn_name => '$',
-        u => 'iwreq_data',
+	ifrn_name => '$', # interface name
+        u => 'iwreq_data', # data part
 ]);
 
 
@@ -174,6 +176,7 @@ struct( wireless_config => [
 	mode => '$',
 ]);
 
+# name of these parameters is quite intuitive, so less explanations :P
 struct( iw_range => [
 	throughput => '$',
 	min_nwid => '$',
@@ -185,10 +188,10 @@ struct( iw_range => [
 	max_qual => 'iw_quality',
 	num_bitrates => '$',
 	bitrate => '$',
-	min_rts => '$',
-	max_rts => '$',
-	min_frag => '$',
-	max_frag => '$',
+	min_rts => '$', # minimal RTS threshold
+	max_rts => '$', # maximal RTS threshold
+	min_frag => '$', # s/RTS/frag
+	max_frag => '$', # s/RTS/frag
 	min_pmp => '$',
 	max_pmp => '$',
 	min_pmt => '$',
@@ -228,7 +231,7 @@ struct( wireless_scan_head => [
 # request --> WE ID
 # pwrq --> Fixed part of the request
 
-# Basic memcmp perl function
+# Basic memcmp perl function not usefull for the user
 sub memcmp {
   no locale;
   $_[0] cmp $_[1];
@@ -270,6 +273,9 @@ sub iw_get_kernel_we_version(){
 	print $file;
 }
 
+ 
+# NOTE:
+# iw_set_ext and iw_get_ext differs only by the IOCTL, one push parameters while the other require parameters
 sub iw_set_ext{
 	my( $skfd, $ifname, $request ) = @_; 
 	my $pwrq = new iwreq;
@@ -295,39 +301,41 @@ sub iw_sockets_open(){
 	}
 }
 
+# close the socket opened with iw_sockets_open function
 sub iw_sockets_close{
   my $skfd = @_;
-  close(skfd)
+  if ( close( $skfd ) ){
+	return 1;
+	}
  }
- 
-# NOTE:
-# iw_set_ext and iw_get_ext differs only by the IOCTL, one push parameters while the other require parameters
 
 
- 
+
 sub iw_process_scan{
 	my( $skfd, $ifname, $we_version, $ioctl ) = @_; 
-	my $buffer;
-	\$buffer = undef;
+	my $buffer = undef;
 	my $buflength = 4096;
 	
-	my $wrq = new iwreq;
 	my $context = new wireless_scan_head;
- 	$context->retry++;
-	if( $context->retry >= 150 ){
+ 	my $retry = $context->retry +1;
+	if( $retry >= 150 ){
 	  return -1;
 	}
-	if( $context->retry == 1 ){
-		$wrq->u->data->pointer = undef;
-		$wrq->u->data->flags = 0;
-		$wrq->u->data->length = 0;
-		if(&iw_set_ext(skfd, ifname, $ioctl, &wrq) < 0 ){
+	if( $retry == 1 ){
+		my $wrq = new iwreq;
+		my $u = $wrq->u;
+		my $data = $u->data;
+		$data->pointer = undef;
+		$data->data->flags = 0;
+		$data->data->length = 0;
+		if(&iw_set_ext( $skfd, $ifname, $ioctl, $wrq ) < 0 ){
 			return(-1);
 		}
 			}
 
 }
 
+# wireless scan
 sub iw_scan{
 	my( $skfd, $ifname, $we_version, $context ) = @_;
 	my $delay;
@@ -364,8 +372,8 @@ sub iw_print_value_name{
 sub iw_print_ie_unknown {
 	my ( @iebuf, $buflength ) = @_;
 	my $ielength = $iebuf[1] + 2;
-	  if( $ielength > $buflen) {
-    		$ielength = $buflen;
+	  if( $ielength > $buflength ) {
+    		$ielength = $buflength ;
 	}
 	for( my $i = 0; $i < $ielength; $i++ ){
 		    printf("%02X", $iebuf[$i]);
@@ -373,32 +381,43 @@ sub iw_print_ie_unknown {
 }
 	}
 
+# list all information elements and use them for determine the protocols used by wireless networks
 sub iw_print_ie_wpa{
 	my ( @iebuf, $buflength ) = @_;
 	my $ielength = $iebuf[1] + 2;
 	my $offset = 2;
-	my (@wpa_oui, @wpa1_oui, @wpa2_oui );
+	my ( @wpa_oui, @wpa1_oui, @wpa2_oui );
 	$wpa1_oui[3] = {0x00, 0x50, 0xf2};
 	$wpa2_oui[3] = {0x00, 0x0f, 0xac};
 	if( $ielength > $buflength ){
     		$ielength = $buflength;
 	}
 	switch( $iebuf[0] ) {
-		case 0x30 { if( $ielength < 4) { &iw_print_ie_unknown( $iebuf, $buflength );  return; @wpa_oui = @wpa2_oui; break;} }
-		case 0xdd { @wpa_oui = @wpa1_oui; if( ( $ielength < 8) or (memcmp(&iebuf[offset], wpa_oui, 3) != 0) or ( $iebuf[ $offset + 3] != 0x01)){ &iw_print_ie_unknown( $iebuf, $buflength ); return; } $offset += 4; break; }
+		case 0x30 { 
+			if( $ielength < 4) { 
+				&iw_print_ie_unknown( @iebuf, $buflength ); 
+				@wpa_oui = @wpa2_oui; 
+				break;
+			}
+		 }
+		case 0xdd { 
+			@wpa_oui = @wpa1_oui; 
+			if( ( $ielength < 8)  or ( $iebuf[ $offset + 3] != 0x01)){ 
+				&iw_print_ie_unknown( @iebuf, $buflength ); 
+				} 
+			$offset += 4; 
+			break; }
 	}
 	my $ver = $iebuf[ $offset ] | ( $iebuf[ $offset + 1] << 8);
 	my $offset += 2;
 	if( $iebuf[0] eq 0xdd){
     		printf("WPA Version %d\n", $ver);
 		}
- 	 if(iebuf[0] == 0x30){
+ 	 if( $iebuf[0] == 0x30){
     		printf("IEEE 802.11i/WPA2 Version %d\n", $ver);
     }
 	}
 	
-	}
-}
-
+		
 1;
 
