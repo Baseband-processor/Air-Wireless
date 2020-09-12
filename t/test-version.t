@@ -8,6 +8,8 @@ BEGIN { plan tests => 1 };
 
 use Air::Wireless qw(:utils); 
 
-print Air::Wireless::iw_get_kernel_we_version(); # Return a value
-
+if(undef(  Air::Wireless::iw_get_kernel_we_version() ) ) {
+  ok(0);# Return a value
+}else{
 ok(1);
+}
